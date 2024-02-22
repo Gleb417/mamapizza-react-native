@@ -1,29 +1,30 @@
 <?php
-const DB_HOST = 'localhost';
-const DB_NAME = 'BDReactNativeMamaPizza';
-const DB_USERNAME = 'root';
-const DB_PASSWORD = '';
 
-function displayPizza(): string
-{
-    $host = 'localhost';
-    $dbname = 'testprak2';
-    $username = 'root';
-    $password = '';
+    // Подключение к базе данных (используя расширение mysqli)
+    $mysqli = new mysqli("localhost", "root", "", "BDReactNativeMamaPizza");
 
-    $dsn = "mysql:host=$host;dbname=$dbname";
+    // Проверка соединения
+    if ($mysqli->connect_error) {
+        die("Ошибка подключения: " . $mysqli->connect_error);
+    }
 
-    try {
-        $pdo = new PDO($dsn, $username, $password);
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Выполнение SQL запроса для выборки всех записей из таблицы
+    $result = $mysqli->query("SELECT * FROM pizza");
 
-        $stmt = $pdo->query("SELECT * FROM pizza ");
-        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+    // Проверка наличия данных
+    if ($result->num_rows > 0) {
+        $data = [];
+        // Формирование массива данных
+        while ($row = $result->fetch_assoc()) {
+            $data[] = $row;
         }
 
-        return $html;
-    } catch(PDOException $e) {
-        return "Ошибка подключения: " . $e->getMessage();
+        // Закрытие соединения
+        $mysqli->close();
+        $response = $data;
+    } else {
+        $mysqli->close();
+
     }
-}
+
+?>
